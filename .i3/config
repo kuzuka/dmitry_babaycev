@@ -10,7 +10,7 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
 set $mod Mod4
-exec feh --bg-scale /home/andrey/.i3/backgr.jpg
+exec feh --bg-scale /home/oleg/.i3/backgr.png
 exec pulseaudio --start
 exec pulseaudio -k
 #exec conky
@@ -189,10 +189,10 @@ bindsym $mod+d exec dmenu_run -i -nb '#0e0e0e' -nf '#bfbfbf' -sb '#b1222b' -sf '
 
 #RED WINDOWS THEME
 # class                    border backgr. text indicator
-client.focused             #b1222b #b1222b #ffffff #b1222b
-client.focused_inactive    #555753 #3c3c3c #ffffff #b1222b
-client.unfocused           #555753 #3c3c3c #888888 #b1222b
-client.urgent              #ad7fa8 #ad7fa8 #ffffff #b1222b
+#client.focused             #b1222b #b1222b #ffffff #b1222b
+#client.focused_inactive    #555753 #3c3c3c #ffffff #b1222b
+#client.unfocused           #555753 #3c3c3c #888888 #b1222b
+#client.urgent              #ad7fa8 #ad7fa8 #ffffff #b1222b
 
 #COOL SKYRIM ORANGE BAR THENE (NEW)
 #class                    border backgr. text indicator
@@ -200,6 +200,13 @@ client.urgent              #ad7fa8 #ad7fa8 #ffffff #b1222b
 #client.focused_inactive    #555753 #3c3c3c #ffffff #d15005
 #client.unfocused           #555753 #3c3c3c #888888 #d15005
 #client.urgent              #ad7fa8 #ad7fa8 #ffffff #d15005
+
+#NEW: NEO FOREST BLUE WINDOW THEME
+#class                    border backgr. text indicator
+client.focused             #509589 #509589 #ffffff #509589
+client.focused_inactive    #509589 #3c3c3c #ffffff #509589
+client.unfocused           #555753 #3c3c3c #888888 #509589
+client.urgent              #ad7fa8 #ad7fa8 #ffffff #509589
 
 # NECROMANT: Default
 #class border backgr. text indicator
@@ -242,10 +249,10 @@ bar {
 
 					                    #RED BAR THEME
                                         #border  backgr. text 
-                                        focused_workspace  #b1222b #b1222b #ffffff
-					                    active_workspace   #FF0A1B #FF4855 #ffffff
-					                    inactive_workspace #b1222b #000000 #aaaaaa
-					                    urgent_workspace   #df5757 #c22f2f #ffffff
+                                        #focused_workspace  #b1222b #b1222b #ffffff
+					                    #active_workspace   #FF0A1B #FF4855 #ffffff
+					                    #inactive_workspace #b1222b #000000 #aaaaaa
+					                    #urgent_workspace   #df5757 #c22f2f #ffffff
 
                                         #COOL SKYRIM ORANGE BAR THENE (NEW)
                                         #focused_workspace  #d15005 #ff851a #ffffff
@@ -302,6 +309,12 @@ bar {
       				 #active_workspace   #586e75 #586e75 #002b36
       				 #inactive_workspace #073642 #002b36 #839496
       				 #urgent_workspace   #dc322f #dc322f #fdf6e3
+
+      				 #NEW: NEO FOREST BLUE BAR THEME
+      				 focused_workspace  #509589 #194d44 #ffffff
+      				 active_workspace   #509589 #00ff00 #ffffff
+      				 inactive_workspace #509589 #000000 #ffffff
+      				 urgent_workspace   #509589 #dc322f #ffffff
 
 
         } 
