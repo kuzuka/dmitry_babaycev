@@ -1,8 +1,8 @@
 # dmitry_babaycev
 A repository of ArchLinux user's configs.
 
-My site: http://babaycev.3dn.ru/
-Vk: http://vk.com/kuzuka_ngh/
+* My site: http://babaycev.3dn.ru/
+* Vk: https://vk.com/kuzuka_ngh/
 
 In this repository you can find
 
