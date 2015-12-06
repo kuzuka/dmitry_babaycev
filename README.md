@@ -2,7 +2,7 @@
 A repository of ArchLinux user's configs.
 
 * My site: http://babaycev.3dn.ru/
-* Vk: https://vk.com/kuzuka_ngh
+* Vk: https://vk.com/idkuzuka
 
 In this repository you can find
 
