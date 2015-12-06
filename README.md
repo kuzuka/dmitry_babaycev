@@ -7,9 +7,9 @@ A repository of ArchLinux user's configs.
 In this repository you can find
 
 * My i3wm configuration files (Current version 2.0 from 11.10.2015) with
- * 8 Windows thenes
- * 11 Bar themes
- * 4 Dmenu themes
+ * 9 Windows thenes
+ * 12 Bar themes
+ * 5 Dmenu themes
  
 * My favorite music MP3 Files
 
