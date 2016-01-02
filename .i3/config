@@ -1,34 +1,33 @@
-###############################################################################################
-###############################################################################################
-###############################################################################################
-###############################################################################################
-############                                                                       ############
-############    Dmitry Babaycev's i3wm configuration file      version 2.1         ############
-############                                                                       ############
-############                                                                       ############
-############                     9 Windows themes!                                 ############
-############                     12 Bar themes!                                    ############
-############                     5 Dmenu themes!                                   ############
-############                                                                       ############
-############                                                                       ############
-############    Contacts:                                                          ############
-############     site: babaycev.3dn.ru                                             ############
-############     vk: vk.com/idkuzuka                                               ############
-############                                                                       ############
-############     Configuration file downloaded from                                ############
-############               https://github.com/kuzuka/dmitry_babaycev               ############
-############                                                                       ############
-###############################################################################################
-###############################################################################################
-###############################################################################################
-###############################################################################################
+#  ███████████████████████████████████████████████████████████████████████████████████████████████
+#  ███████████████████████████████████████████████████████████████████████████████████████████████
+#  ███████████████████████████████████████████████████████████████████████████████████████████████
+#  ███████████████████████████████████████████████████████████████████████████████████████████████
+#  ████████████                                                                       ████████████
+#  ████████████    Dmitry Babaycev's i3wm configuration file      version 2.2         ████████████
+#  ████████████                                                                       ████████████
+#  ████████████                                                                       ████████████
+#  ████████████                     11 Windows themes!                                ████████████
+#  ████████████                     14 Bar themes!                                    ████████████
+#  ████████████                     6 Dmenu themes!                                   ████████████
+#  ████████████                                                                       ████████████
+#  ████████████                                                                       ████████████
+#  ████████████    Contacts:                                                          ████████████
+#  ████████████     site: babaycev.3dn.ru                                             ████████████
+#  ████████████     vk: vk.com/idkuzuka                                               ████████████
+#  ████████████                                                                       ████████████
+#  ████████████     Configuration file downloaded from                                ████████████
+#  ████████████               https://github.com/kuzuka/dmitry_babaycev               ████████████
+#  ████████████                                                                       ████████████
+#  ███████████████████████████████████████████████████████████████████████████████████████████████
+#  ███████████████████████████████████████████████████████████████████████████████████████████████
+#  ███████████████████████████████████████████████████████████████████████████████████████████████
+#  ███████████████████████████████████████████████████████████████████████████████████████████████
 
 set $mod Mod4
 exec setxkbmap "us,ru" ",winkeys" "grp:alt_shift_toggle,grp_led:scroll"
-exec feh --bg-scale /home/oleg/.i3/backgr0.jpg
+exec feh --bg-scale /home/oleg/.i3/Girl.jpg
 exec pulseaudio --start
 exec pulseaudio -k
-#exec compton -cCGfF -b -i 0.75 —vsync opengl &
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below. ISO 10646 = Unicode
@@ -37,7 +36,7 @@ font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 # clear in small sizes. However, if you need a lot of unicode glyphs or
 # right-to-left text rendering, you should instead use pango for rendering and
 # chose a FreeType font, such as:
-#font pango:Terminus (TTF) 10
+#font pango:Terminus 10
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -123,6 +122,9 @@ bindsym $mod+8 workspace 8
 bindsym $mod+9 workspace 9
 bindsym $mod+0 workspace 10
 
+bindsym Mod1+M workspace MYSTERY
+bindsym Mod1+Shift+M move container to workspace MYSTERY
+
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace 1
 bindsym $mod+Shift+2 move container to workspace 2
@@ -155,7 +157,7 @@ bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Do you really want to exist?' -b 'Yes, exit i3' 'i3-msg exit'"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -181,15 +183,15 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 
-# bindsym $mod+r mode "resize"
+#bindsym $mod+r mode "resize"
 
 new_window pixel 2
 
-# ██████████  ██   ██  ██████  ████   ████  ██████  ██████
-#     ██      ██   ██  ██      ██ ██ ██ ██  ██      ██
-#     ██      ███████  █████   ██  ███  ██  █████   ██████
-#     ██      ██   ██  ██      ██       ██  ██          ██
-#     ██      ██   ██  ██████  ██       ██  ██████  ██████
+#  ██████████  ██   ██  ██████  ████   ████  ██████  ██████
+#      ██      ██   ██  ██      ██ ██ ██ ██  ██      ██
+#      ██      ███████  █████   ██  ███  ██  █████   ██████
+#      ██      ██   ██  ██      ██       ██  ██          ██
+#      ██      ██   ██  ██████  ██       ██  ██████  ██████
 
 
 
@@ -205,8 +207,11 @@ new_window pixel 2
 #NEO FOREST BLUE DMENU THEME
 #bindsym $mod+d exec dmenu_run -i -nb '#0e0e0e' -nf '#bfbfbf' -sb '#509589' -sf '#d0d0d0'
 
+#NEW: SPRING LIGHT DMENU THEME
+bindsym $mod+d exec dmenu_run -i -nb '#0e0e0e' -nf '#bfbfbf' -sb '#6462d3' -sf '#d0d0d0'
+
 #NEW: GOLDEN GRAY DMENU THEME
-bindsym $mod+d exec dmenu_run -i -nb '#252525' -nf '#8E8E6C' -sb '#8E8E6C' -sf '#252525'
+#bindsym $mod+d exec dmenu_run -i -nb '#252525' -nf '#8E8E6C' -sb '#8E8E6C' -sf '#252525'
 
 
 
@@ -222,7 +227,7 @@ bindsym $mod+d exec dmenu_run -i -nb '#252525' -nf '#8E8E6C' -sb '#8E8E6C' -sf '
 #client.focused             #8916c3 #8916c3 #ffffff #8916c3
 #client.focused_inactive    #555753 #3c3c3c #ffffff #8916c3
 #client.unfocused           #555753 #3c3c3c #888888 #8916c3
-#client.urgent              #ad7fa8 #ad7fa8 #ffffff #8916c3
+#client.urgent              #2f343a #900000 #ffffff #900000
 
 #RED WINDOWS THEME
 # class                    border backgr. text indicator
@@ -245,12 +250,19 @@ bindsym $mod+d exec dmenu_run -i -nb '#252525' -nf '#8E8E6C' -sb '#8E8E6C' -sf '
 #client.unfocused           #555753 #3c3c3c #888888 #509589
 #client.urgent              #ad7fa8 #ad7fa8 #ffffff #509589
 
+##NEW: SPRING LIGHT WINDOWS THEME
+## class                    border backgr. text indicator
+client.focused             #6462d3 #6462d3 #ffffff #6462d3
+client.focused_inactive    #555753 #3c3c3c #ffffff #6462d3
+client.unfocused           #555753 #3c3c3c #888888 #6462d3
+client.urgent              #2f343a #900000 #ffffff #900000
+
 #NEW: GOLDEN GRAY WINDOWS THEME
 #class                    border backgr. text indicator
-client.focused             #CECE96 #8E8E6C #ffffff #8E8E6C
-client.focused_inactive    #CECE96 #3c3c3c #ffffff #3c3c3c
-client.unfocused           #555753 #3c3c3c #888888 #509589
-client.urgent              #ad7fa8 #ad7fa8 #ffffff #509589
+#client.focused             #CECE96 #8E8E6C #ffffff #8E8E6C
+#client.focused_inactive    #CECE96 #3c3c3c #ffffff #3c3c3c
+#client.unfocused           #555753 #3c3c3c #888888 #509589
+#client.urgent              #ad7fa8 #ad7fa8 #ffffff #509589
 
 #NEW: DARK BLUE WINTER WINDOW THEME
 #client.focused          #4c7899 #285577 #ffffff #2e9ef4
@@ -283,107 +295,124 @@ client.urgent              #ad7fa8 #ad7fa8 #ffffff #509589
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
+    #tray_output none
     #status_command i3status -c /home/andrey/.i3/i3status.conf
     #i3bar_command ~/.i3/lemonbar/i3_lemonbar.sh
+    #output LVDS 
     status_command bash ~/.i3/i3script.sh
     colors {
 
     #DEFAULT I3 BAR THEME
-		 # background #3c3c3c
-		 # statusline #bbbbbb
-		 #border backgr text
-		 #focused_workspace  #4c7899 #285577 #ffffff
-		 #active_workspace   #333333 #5f676a #ffffff
-		 #inactive_workspace #333333 #222222 #888888
-		 #urgent_workspace   #2f343a #900000 #ffffff
+	#background #3c3c3c
+	#statusline #bbbbbb
+	##border backgr text
+	#focused_workspace  #4c7899 #285577 #ffffff
+	#active_workspace   #333333 #5f676a #ffffff
+	#inactive_workspace #333333 #222222 #888888
+	#urgent_workspace   #2f343a #900000 #ffffff
 
-     ##VIOLET BAR THEME
-     ##border  backgr. text 
-     #focused_workspace  #8916c3 #8916c3 #ffffff
-		 #active_workspace   #FF0A1B #FF4855 #ffffff
-		 #inactive_workspace #3c3c3c #3c3c3c #aaaaaa
-		 #urgent_workspace   #df5757 #c22f2f #ffffff
+    ##VIOLET BAR THEME
+    ##border  backgr. text 
+    #focused_workspace  #8916c3 #8916c3 #ffffff
+	#active_workspace   #8916c3 #000000 #ffffff
+	#inactive_workspace #8916c3 #000000 #aaaaaa
+	#urgent_workspace   #8916c3 #8916c3 #ffffff
 
-		 #RED BAR THEME
-     #border  backgr. text 
-     #focused_workspace  #b1222b #b1222b #ffffff
-		 #active_workspace   #FF0A1B #FF4855 #ffffff
-		 #inactive_workspace #b1222b #000000 #aaaaaa
-		 #urgent_workspace   #df5757 #c22f2f #ffffff
+	#RED BAR THEME
+    #border  backgr. text 
+    #focused_workspace  #b1222b #b1222b #ffffff
+	#active_workspace   #FF0A1B #FF4855 #ffffff
+	#inactive_workspace #b1222b #000000 #aaaaaa
+	#urgent_workspace   #df5757 #c22f2f #ffffff
 
-     #COOL SKYRIM ORANGE BAR THENE (NEW)
-     #focused_workspace  #d15005 #ff851a #ffffff
-     #active_workspace   #ff0000 #00ff00 #0000ff
-     #inactive_workspace #d15005 #000000 #aaaaaa
-     #urgent_workspace   #ffff00 #43372d $ffff00
+    #COOL SKYRIM ORANGE BAR THENE (NEW)
+    #focused_workspace  #d15005 #ff851a #ffffff
+    #active_workspace   #ff0000 #00ff00 #0000ff
+    #inactive_workspace #d15005 #000000 #aaaaaa
+    #urgent_workspace   #ffff00 #43372d $ffff00
 
-     #NEO FOREST BLUE BAR THEME
-     #focused_workspace  #509589 #194d44 #ffffff
-     #active_workspace   #509589 #00ff00 #ffffff
-     #inactive_workspace #509589 #000000 #ffffff
-     #urgent_workspace   #509589 #dc322f #ffffff
+    #NEO FOREST BLUE BAR THEME
+    #statusline #9afadc
+    #focused_workspace  #509589 #194d44 #ffffff
+    #active_workspace   #509589 #000000 #ffffff
+    #inactive_workspace #509589 #000000 #ffffff
+    #urgent_workspace   #509589 #dc322f #ffffff
 
-     #NEW: GOLDEN GRAY BAR THEME
-     background #252525
-	 statusline #CECE96
-     focused_workspace  #CECE96 #8E8E6C #252525
-     active_workspace   #CECE96 #252525 #CECE96
-     inactive_workspace #CECE96 #252525 #CECE96
-     urgent_workspace   #CECE96 #dc322f #CECE96
+    ##NEW: SPRING LIGHT BAR THEME
+    ##border  backgr. text 
+    statusline #8485c2
+    focused_workspace  #8485c2 #6462d3 #ffffff
+    active_workspace   #6462d3 #000000 #ffffff
+    inactive_workspace #6462d3 #000000 #aaaaaa
+    urgent_workspace   #6462d3 #8916c3 #ffffff
 
-     #NEW: DARK BLUE BAR THEME
-     #focused_workspace  #325f88 #051e57 #ffffff
-     #active_workspace   #325f88 #00ff00 #ffffff
-     #inactive_workspace #325f88 #000000 #ffffff
-     #urgent_workspace   #325f88 #dc322f #ffffff
+    #NEW: GOLDEN GRAY BAR THEME
+    #background #252525
+	#statusline #CECE96
+    #focused_workspace  #CECE96 #8E8E6C #252525
+    #active_workspace   #CECE96 #252525 #CECE96
+    #inactive_workspace #CECE96 #252525 #CECE96
+    #urgent_workspace   #CECE96 #dc322f #CECE96
 
-		 #NECROMANT: Commie
-		 #background #3c3c3c
-		 #statusline #d5b210
-		 #focused_workspace  #e60000 #9a0000 #fdd116
-		 #active_workspace   #75507b #ad7fa8 #ffffff
-		 #inactive_workspace #3c3c3c #3c3c3c #d5b210
-		 #urgent_workspace   #df5757 #c22f2f #ffffff
+    #NEW: DARK BLUE BAR THEME
+    #focused_workspace  #325f88 #051e57 #ffffff
+    #active_workspace   #325f88 #00ff00 #ffffff
+    #inactive_workspace #325f88 #000000 #ffffff
+    #urgent_workspace   #325f88 #dc322f #ffffff
 
-		 #NECROMANT: my
-		 #background #000000
-	 	 #statusline #8CBCE7
-	 	 #focused_workspace #11aaff #A20000
-	 	 #active_workspace  #11aaff #A20000
-	 	 #urgent_workspace  #ffffff #E6E600
+	#NECROMANT: Commie
+	#background #3c3c3c
+	#statusline #d5b210
+	#focused_workspace  #e60000 #9a0000 #fdd116
+	#active_workspace   #75507b #ad7fa8 #ffffff
+	#inactive_workspace #3c3c3c #3c3c3c #d5b210
+	#urgent_workspace   #df5757 #c22f2f #ffffff
 
-		 #NECROMANT: ekse
-		 #background #3c3c3c
-		 #statusline #bbbbbb
-		 #focused_workspace  #ad7fa8 #75507b #ffffff
-		 #active_workspace   #75507b #ad7fa8 #ffffff
-		 #inactive_workspace #3c3c3c #3c3c3c #aaaaaa
-		 #urgent_workspace   #df5757 #c22f2f #ffffff
+	#NECROMANT: my
+	#background #000000
+	#statusline #8CBCE7
+	#focused_workspace #11aaff #A20000
+	#active_workspace  #11aaff #A20000
+	#urgent_workspace  #ffffff #E6E600
 
-		 #NECROMANT: ekse2
-		 #background #000000
-		 #statusline #d0d0d0 
-		 #focused_workspace  #ad7fa8 #75507b #ffffff
-		 #active_workspace   #75507b #ad7fa8 #ffffff
-		 #inactive_workspace #000000 #000000 #aaaaaa
-		 #urgent_workspace   #df5757 #c22f2f #ffffff
+	#NECROMANT: ekse
+	#background #3c3c3c
+	#statusline #bbbbbb
+	#focused_workspace  #ad7fa8 #75507b #ffffff
+	#active_workspace   #75507b #ad7fa8 #ffffff
+	#inactive_workspace #3c3c3c #3c3c3c #aaaaaa
+	#urgent_workspace   #df5757 #c22f2f #ffffff
 
-		 #NECROMANT: ekse2-light
-		 #background #3c3c3c
-		 #statusline #bbbbbb
-		 #focused_workspace  #ad7fa8 #75507b #ffffff
-		 #active_workspace   #75507b #ad7fa8 #ffffff
-		 #inactive_workspace #3c3c3c #3c3c3c #aaaaaa
-		 #urgent_workspace   #df5757 #c22f2f #ffffff
+	#NECROMANT: ekse2
+	#background #000000
+	#statusline #d0d0d0 
+	#focused_workspace  #ad7fa8 #75507b #ffffff
+	#active_workspace   #75507b #ad7fa8 #ffffff
+	#inactive_workspace #000000 #000000 #aaaaaa
+	#urgent_workspace   #df5757 #c22f2f #ffffff
 
-		 #NECROMANT: solorized
-		 #background #000304
-     #statusline #839496
-     #focused_workspace  #b58900 #b58900 #002b36
-     #active_workspace   #586e75 #586e75 #002b36
-     #inactive_workspace #073642 #002b36 #839496
-     #urgent_workspace   #dc322f #dc322f #fdf6e3
+	#NECROMANT: ekse2-light
+	#background #3c3c3c
+	#statusline #bbbbbb
+	#focused_workspace  #ad7fa8 #75507b #ffffff
+	#active_workspace   #75507b #ad7fa8 #ffffff
+	#inactive_workspace #3c3c3c #3c3c3c #aaaaaa
+	#urgent_workspace   #df5757 #c22f2f #ffffff
+
+	#NECROMANT: solorized
+    #background #000304
+    #statusline #839496
+    #focused_workspace  #b58900 #b58900 #002b36
+    #active_workspace   #586e75 #586e75 #002b36
+    #inactive_workspace #073642 #002b36 #839496
+    #urgent_workspace   #dc322f #dc322f #fdf6e3
 
         } 
 
 }
+
+#  ██████  ██   ███  ██████        ████████  ██████      ██████  ████████  ██   ███  ██████  ████  ████████
+#  ██      ██  ████  ██   ██       ██    ██  ██          ██      ██    ██  ██  ████  ██       ██   ██
+#  ████    ██ ██ ██  ██   ██       ██    ██  █████       ██      ██    ██  ██ ██ ██  █████    ██   ██  ████
+#  ██      ████  ██  ██   ██       ██    ██  ██          ██      ██    ██  ████  ██  ██       ██   ██    ██
+#  ██████  ███   ██  ██████        ████████  ██          ██████  ████████  ███   ██  ██      ████  ████████
