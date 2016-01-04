@@ -1,0 +1,59 @@
+use_xft yes
+xftfont 123:size=8
+xftalpha 0.1
+update_interval 1
+total_run_times 0
+
+own_window no
+own_window_type desktop
+own_window_transparent yes
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+own_window_colour 000000
+own_window_argb_visual no
+own_window_argb_value 0
+
+double_buffer yes
+#minimum_size 250 5
+#maximum_width 500
+draw_shades no
+draw_outline no
+draw_borders no
+draw_graph_borders no
+default_color white
+default_shade_color red
+default_outline_color green
+alignment top_left
+gap_x 0
+gap_y 20
+no_buffers yes
+uppercase no
+cpu_avg_samples 2
+net_avg_samples 1
+override_utf8_locale yes
+use_spacer yes
+
+stippled_borders 0
+update_interval 1.0
+uppercase no
+use_spacer none
+
+show_graph_scale no
+show_graph_range no
+
+
+minimum_size 0 0
+TEXT
+${color #118d78}${offset 29}${voffset 350}${color #118d78}${font Roboto Heavy:pixelsize=120}${time %I:%M}${voffset -35}${font Roboto Lights:pixelsize=70}${time [%S]}
+${offset 39}${color 118d78}${font Roboto Bold:pixelsize=42}Today is ${time %d}.${voffset -5}${font Roboto:pixelsize=42}${time  %m}.${font Roboto Light:pixelsize=42}${time %Y}${font}
+${voffset 1}${offset 12}${font Roboto:pixelsize=24}
+${offset 40}${color 118d78}Uptime: ${color FFFFFF}${uptime}
+${voffset 6}${offset 40}${color 118d78}HD: ${offset 9}$color${fs_free /}${color #118d78} / ${fs_size /}${offset 30}${color 118d78}
+${voffset 6}${offset 40}RAM: ${offset 9}$color$mem ${color #118d78}/ $memmax${offset 5}
+${voffset -6}${offset 40}${color 118d78}${voffset 3}${membar 20}
+${offset 40}${color #118d78}CPU:  ${color #FFFFFF}${cpu cpu0}${color #118d78} %${cpugraph cpu0 20,380}
+${voffset -6}${offset 40}${color #118d78}${cpubar cpu0 20} 
+
+# by ILUXA69RUS 
+
+
+
