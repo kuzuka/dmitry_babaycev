@@ -3,12 +3,12 @@
 #  ███████████████████████████████████████████████████████████████████████████████████████████████
 #  ███████████████████████████████████████████████████████████████████████████████████████████████
 #  ████████████                                                                       ████████████
-#  ████████████    Dmitry Babaycev's i3wm configuration file      version 2.2         ████████████
+#  ████████████    Dmitry Babaycev's i3wm configuration file      version 2.3         ████████████
 #  ████████████                                                                       ████████████
 #  ████████████                                                                       ████████████
-#  ████████████                     11 Windows themes!                                ████████████
-#  ████████████                     14 Bar themes!                                    ████████████
-#  ████████████                     6 Dmenu themes!                                   ████████████
+#  ████████████                     12 Windows themes!                                ████████████
+#  ████████████                     15 Bar themes!                                    ████████████
+#  ████████████                     7 Dmenu themes!                                   ████████████
 #  ████████████                                                                       ████████████
 #  ████████████                                                                       ████████████
 #  ████████████    Contacts:                                                          ████████████
@@ -24,10 +24,12 @@
 #  ███████████████████████████████████████████████████████████████████████████████████████████████
 
 set $mod Mod4
+exec conky
 exec setxkbmap "us,ru" ",winkeys" "grp:alt_shift_toggle,grp_led:scroll"
-exec feh --bg-scale /home/oleg/.i3/Girl.jpg
+exec feh --bg-scale /home/oleg/.i3/lol1.png
 exec pulseaudio --start
 exec pulseaudio -k
+exec xrandr --dpi 100
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below. ISO 10646 = Unicode
@@ -207,11 +209,14 @@ new_window pixel 2
 #NEO FOREST BLUE DMENU THEME
 #bindsym $mod+d exec dmenu_run -i -nb '#0e0e0e' -nf '#bfbfbf' -sb '#509589' -sf '#d0d0d0'
 
-#NEW: SPRING LIGHT DMENU THEME
-bindsym $mod+d exec dmenu_run -i -nb '#0e0e0e' -nf '#bfbfbf' -sb '#6462d3' -sf '#d0d0d0'
+#SPRING LIGHT DMENU THEME
+#bindsym $mod+d exec dmenu_run -i -nb '#0e0e0e' -nf '#bfbfbf' -sb '#6462d3' -sf '#d0d0d0'
 
-#NEW: GOLDEN GRAY DMENU THEME
+#GOLDEN GRAY DMENU THEME
 #bindsym $mod+d exec dmenu_run -i -nb '#252525' -nf '#8E8E6C' -sb '#8E8E6C' -sf '#252525'
+
+#NEW: GREY TURQUIOSE DMENU THEME
+bindsym $mod+d exec dmenu_run -i -nb '#252525' -nf '#118d78' -sb '#118d78' -sf '#252525'
 
 
 
@@ -250,25 +255,26 @@ bindsym $mod+d exec dmenu_run -i -nb '#0e0e0e' -nf '#bfbfbf' -sb '#6462d3' -sf '
 #client.unfocused           #555753 #3c3c3c #888888 #509589
 #client.urgent              #ad7fa8 #ad7fa8 #ffffff #509589
 
-##NEW: SPRING LIGHT WINDOWS THEME
-## class                    border backgr. text indicator
-client.focused             #6462d3 #6462d3 #ffffff #6462d3
-client.focused_inactive    #555753 #3c3c3c #ffffff #6462d3
-client.unfocused           #555753 #3c3c3c #888888 #6462d3
-client.urgent              #2f343a #900000 #ffffff #900000
+#SPRING LIGHT WINDOWS THEME
+# class                    border backgr. text indicator
+#client.focused             #6462d3 #6462d3 #ffffff #6462d3
+#client.focused_inactive    #555753 #3c3c3c #ffffff #6462d3
+#client.unfocused           #555753 #3c3c3c #888888 #6462d3
+#client.urgent              #2f343a #900000 #ffffff #900000
 
-#NEW: GOLDEN GRAY WINDOWS THEME
+#GOLDEN GRAY WINDOWS THEME
 #class                    border backgr. text indicator
 #client.focused             #CECE96 #8E8E6C #ffffff #8E8E6C
 #client.focused_inactive    #CECE96 #3c3c3c #ffffff #3c3c3c
 #client.unfocused           #555753 #3c3c3c #888888 #509589
 #client.urgent              #ad7fa8 #ad7fa8 #ffffff #509589
 
-#NEW: DARK BLUE WINTER WINDOW THEME
-#client.focused          #4c7899 #285577 #ffffff #2e9ef4
-#client.focused_inactive #333333 #5f676a #ffffff #484e50
-#client.unfocused        #333333 #222222 #888888 #292d2e
-#client.urgent           #2f343a #900000 #ffffff #900000
+#NEW: GREY TURQUIOSE WINDOWS THEME
+#class                    border backgr. text indicator
+client.focused             #62A096 #118d78 #ffffff #118d78
+client.focused_inactive    #62A096 #3c3c3c #ffffff #3c3c3c
+client.unfocused           #555753 #3c3c3c #888888 #509589
+client.urgent              #ad7fa8 #ad7fa8 #ffffff #509589
 
 ## NECROMANT: Commie colors
 #client.focused           #e60000 #9a0000 #fdd216 #ff0000
@@ -338,21 +344,29 @@ bar {
     #inactive_workspace #509589 #000000 #ffffff
     #urgent_workspace   #509589 #dc322f #ffffff
 
-    ##NEW: SPRING LIGHT BAR THEME
+    #SPRING LIGHT BAR THEME
     ##border  backgr. text 
-    statusline #8485c2
-    focused_workspace  #8485c2 #6462d3 #ffffff
-    active_workspace   #6462d3 #000000 #ffffff
-    inactive_workspace #6462d3 #000000 #aaaaaa
-    urgent_workspace   #6462d3 #8916c3 #ffffff
+    #statusline #8485c2
+    #focused_workspace  #8485c2 #6462d3 #ffffff
+    #active_workspace   #6462d3 #000000 #ffffff
+    #inactive_workspace #6462d3 #000000 #aaaaaa
+    #urgent_workspace   #6462d3 #8916c3 #ffffff
 
-    #NEW: GOLDEN GRAY BAR THEME
+    #GOLDEN GRAY BAR THEME
     #background #252525
 	#statusline #CECE96
     #focused_workspace  #CECE96 #8E8E6C #252525
     #active_workspace   #CECE96 #252525 #CECE96
     #inactive_workspace #CECE96 #252525 #CECE96
     #urgent_workspace   #CECE96 #dc322f #CECE96
+
+    #NEW: GREY TURQUIOSE BAR THEME
+    background #161616
+    statusline #41BCA8
+    focused_workspace  #41BCA8 #118d78 #161616
+    active_workspace   #41BCA8 #161616 #41BCA8
+    inactive_workspace #41BCA8 #161616 #41BCA8
+    urgent_workspace   #41BCA8 #dc322f #41BCA8
 
     #NEW: DARK BLUE BAR THEME
     #focused_workspace  #325f88 #051e57 #ffffff
