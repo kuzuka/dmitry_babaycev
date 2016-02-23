@@ -6,9 +6,9 @@
 #  ████████████    Dmitry Babaycev's i3wm configuration file      version 2.3         ████████████
 #  ████████████                                                                       ████████████
 #  ████████████                                                                       ████████████
-#  ████████████                     12 Windows themes!                                ████████████
-#  ████████████                     15 Bar themes!                                    ████████████
-#  ████████████                     7 Dmenu themes!                                   ████████████
+#  ████████████                     8 Windows themes!                                 ████████████
+#  ████████████                     9 Bar themes!                                     ████████████
+#  ████████████                     6 Dmenu themes!                                   ████████████
 #  ████████████                                                                       ████████████
 #  ████████████                                                                       ████████████
 #  ████████████    Contacts:                                                          ████████████
@@ -26,7 +26,7 @@
 set $mod Mod4
 exec conky
 exec setxkbmap "us,ru" ",winkeys" "grp:alt_shift_toggle,grp_led:scroll"
-exec feh --bg-scale /home/oleg/.i3/lol1.png
+exec feh --bg-scale /home/oleg/.i3/Girl.jpg
 exec pulseaudio --start
 exec pulseaudio -k
 exec xrandr --dpi 100
@@ -38,7 +38,7 @@ font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 # clear in small sizes. However, if you need a lot of unicode glyphs or
 # right-to-left text rendering, you should instead use pango for rendering and
 # chose a FreeType font, such as:
-#font pango:Terminus 10
+#font pango:Nimbus Roman No9 L 10
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -196,10 +196,6 @@ new_window pixel 2
 #      ██      ██   ██  ██████  ██       ██  ██████  ██████
 
 
-
-#VIOLET DMENU THEME
-#bindsym $mod+d exec dmenu_run -i -nb '#0e0e0e' -nf '#bfbfbf' -sb '#8916c3' -sf '#d0d0d0'
-
 #RED DMENU THEME
 #bindsym $mod+d exec dmenu_run -i -nb '#0e0e0e' -nf '#bfbfbf' -sb '#b1222b' -sf '#d0d0d0'
 
@@ -210,14 +206,16 @@ new_window pixel 2
 #bindsym $mod+d exec dmenu_run -i -nb '#0e0e0e' -nf '#bfbfbf' -sb '#509589' -sf '#d0d0d0'
 
 #SPRING LIGHT DMENU THEME
-#bindsym $mod+d exec dmenu_run -i -nb '#0e0e0e' -nf '#bfbfbf' -sb '#6462d3' -sf '#d0d0d0'
+bindsym $mod+d exec dmenu_run -i -nb '#0e0e0e' -nf '#bfbfbf' -sb '#6462d3' -sf '#d0d0d0'
 
 #GOLDEN GRAY DMENU THEME
 #bindsym $mod+d exec dmenu_run -i -nb '#252525' -nf '#8E8E6C' -sb '#8E8E6C' -sf '#252525'
 
-#NEW: GREY TURQUIOSE DMENU THEME
-bindsym $mod+d exec dmenu_run -i -nb '#252525' -nf '#118d78' -sb '#118d78' -sf '#252525'
+#GREY TURQUIOSE DMENU THEME
+#bindsym $mod+d exec dmenu_run -i -nb '#252525' -nf '#118d78' -sb '#118d78' -sf '#252525'
 
+#EYPHORIA ANALOG DMENU THEME
+#bindsym $mod+d exec dmenu_run -i -nb '#0e0e0e' -nf '#bfbfbf' -sb '#455a64' -sf '#d0d0d0'
 
 
 # DEFAULT I3 WINDOWS THEME
@@ -226,13 +224,6 @@ bindsym $mod+d exec dmenu_run -i -nb '#252525' -nf '#118d78' -sb '#118d78' -sf '
 #client.focused_inactive #333333 #5f676a #ffffff #484e50
 #client.unfocused        #333333 #222222 #888888 #292d2e
 #client.urgent           #2f343a #900000 #ffffff #900000
-
-##VIOLET WINDOWS THEME
-## class                    border backgr. text indicator
-#client.focused             #8916c3 #8916c3 #ffffff #8916c3
-#client.focused_inactive    #555753 #3c3c3c #ffffff #8916c3
-#client.unfocused           #555753 #3c3c3c #888888 #8916c3
-#client.urgent              #2f343a #900000 #ffffff #900000
 
 #RED WINDOWS THEME
 # class                    border backgr. text indicator
@@ -257,9 +248,16 @@ bindsym $mod+d exec dmenu_run -i -nb '#252525' -nf '#118d78' -sb '#118d78' -sf '
 
 #SPRING LIGHT WINDOWS THEME
 # class                    border backgr. text indicator
-#client.focused             #6462d3 #6462d3 #ffffff #6462d3
-#client.focused_inactive    #555753 #3c3c3c #ffffff #6462d3
-#client.unfocused           #555753 #3c3c3c #888888 #6462d3
+client.focused             #6462d3 #6462d3 #ffffff #6462d3
+client.focused_inactive    #555753 #3c3c3c #ffffff #6462d3
+client.unfocused           #555753 #3c3c3c #888888 #6462d3
+client.urgent              #2f343a #900000 #ffffff #900000
+
+#NEW: EYPHORIA ANALOG WINDOWS THEME
+# class                    border backgr. text indicator
+#client.focused             #607d8b #455a64 #ffffff #607d8b
+#client.focused_inactive    #555753 #3c3c3c #ffffff #607d8b
+#client.unfocused           #555753 #3c3c3c #888888 #607d8b
 #client.urgent              #2f343a #900000 #ffffff #900000
 
 #GOLDEN GRAY WINDOWS THEME
@@ -269,31 +267,18 @@ bindsym $mod+d exec dmenu_run -i -nb '#252525' -nf '#118d78' -sb '#118d78' -sf '
 #client.unfocused           #555753 #3c3c3c #888888 #509589
 #client.urgent              #ad7fa8 #ad7fa8 #ffffff #509589
 
-#NEW: GREY TURQUIOSE WINDOWS THEME
+#GREY TURQUIOSE WINDOWS THEME
 #class                    border backgr. text indicator
-client.focused             #62A096 #118d78 #ffffff #118d78
-client.focused_inactive    #62A096 #3c3c3c #ffffff #3c3c3c
-client.unfocused           #555753 #3c3c3c #888888 #509589
-client.urgent              #ad7fa8 #ad7fa8 #ffffff #509589
-
-## NECROMANT: Commie colors
-#client.focused           #e60000 #9a0000 #fdd216 #ff0000
-#client.focused_inactive  #555753 #3c3c3c #d5b210 #ad7fa8
-#client.unfocused         #555753 #3c3c3c #d5b210 #ad7fa8
-#client.urgent            #ad7fa8 #ad7fa8 #ffffff #ff0000
+#client.focused             #62A096 #118d78 #ffffff #118d78
+#client.focused_inactive    #62A096 #3c3c3c #ffffff #3c3c3c
+#client.unfocused           #555753 #3c3c3c #888888 #509589
+#client.urgent              #ad7fa8 #ad7fa8 #ffffff #509589
 
 # # NECROMANT: Violet
 #client.focused          #ad7fa8 #75507b #ffffff #ad7fa8
 #client.focused_inactive #555753 #3c3c3c #ffffff #ad7fa8
 #client.unfocused        #555753 #3c3c3c #888888 #ad7fa8
 #client.urgent           #ad7fa8 #ad7fa8 #ffffff #ff0000
-
-# NECROMANT: Solorized
-#client.focused          #586e75 #586e75 #fdf6e3 #268bd2
-#client.focused_inactive #555753 #555753 #ffffff #ad7fa8
-#client.unfocused        #555753 #555753 #839496 #073642
-#client.urgent           #002b36 #dc322f #fdf6e3 #002b36
-
 
 
 
@@ -317,13 +302,6 @@ bar {
 	#inactive_workspace #333333 #222222 #888888
 	#urgent_workspace   #2f343a #900000 #ffffff
 
-    ##VIOLET BAR THEME
-    ##border  backgr. text 
-    #focused_workspace  #8916c3 #8916c3 #ffffff
-	#active_workspace   #8916c3 #000000 #ffffff
-	#inactive_workspace #8916c3 #000000 #aaaaaa
-	#urgent_workspace   #8916c3 #8916c3 #ffffff
-
 	#RED BAR THEME
     #border  backgr. text 
     #focused_workspace  #b1222b #b1222b #ffffff
@@ -345,12 +323,18 @@ bar {
     #urgent_workspace   #509589 #dc322f #ffffff
 
     #SPRING LIGHT BAR THEME
-    ##border  backgr. text 
-    #statusline #8485c2
-    #focused_workspace  #8485c2 #6462d3 #ffffff
-    #active_workspace   #6462d3 #000000 #ffffff
-    #inactive_workspace #6462d3 #000000 #aaaaaa
-    #urgent_workspace   #6462d3 #8916c3 #ffffff
+    statusline #8485c2
+    focused_workspace  #8485c2 #6462d3 #ffffff
+    active_workspace   #6462d3 #000000 #ffffff
+    inactive_workspace #6462d3 #000000 #aaaaaa
+    urgent_workspace   #6462d3 #8916c3 #ffffff
+
+    #NEW: EYPHORIA ANALOG BAR THEME
+    #statusline #94b1bf
+    #focused_workspace  #607d8b #455a64 #ffffff
+    #active_workspace   #607d8b #000000 #ffffff
+    #inactive_workspace #607d8b #000000 #aaaaaa
+    #urgent_workspace   #607d8b #8916c3 #ffffff
 
     #GOLDEN GRAY BAR THEME
     #background #252525
@@ -360,44 +344,15 @@ bar {
     #inactive_workspace #CECE96 #252525 #CECE96
     #urgent_workspace   #CECE96 #dc322f #CECE96
 
-    #NEW: GREY TURQUIOSE BAR THEME
-    background #161616
-    statusline #41BCA8
-    focused_workspace  #41BCA8 #118d78 #161616
-    active_workspace   #41BCA8 #161616 #41BCA8
-    inactive_workspace #41BCA8 #161616 #41BCA8
-    urgent_workspace   #41BCA8 #dc322f #41BCA8
-
-    #NEW: DARK BLUE BAR THEME
-    #focused_workspace  #325f88 #051e57 #ffffff
-    #active_workspace   #325f88 #00ff00 #ffffff
-    #inactive_workspace #325f88 #000000 #ffffff
-    #urgent_workspace   #325f88 #dc322f #ffffff
-
-	#NECROMANT: Commie
-	#background #3c3c3c
-	#statusline #d5b210
-	#focused_workspace  #e60000 #9a0000 #fdd116
-	#active_workspace   #75507b #ad7fa8 #ffffff
-	#inactive_workspace #3c3c3c #3c3c3c #d5b210
-	#urgent_workspace   #df5757 #c22f2f #ffffff
-
-	#NECROMANT: my
-	#background #000000
-	#statusline #8CBCE7
-	#focused_workspace #11aaff #A20000
-	#active_workspace  #11aaff #A20000
-	#urgent_workspace  #ffffff #E6E600
+    #GREY TURQUIOSE BAR THEME
+    #background #161616
+    #statusline #41BCA8
+    #focused_workspace  #41BCA8 #118d78 #161616
+    #active_workspace   #41BCA8 #161616 #41BCA8
+    #inactive_workspace #41BCA8 #161616 #41BCA8
+    #urgent_workspace   #41BCA8 #dc322f #41BCA8
 
 	#NECROMANT: ekse
-	#background #3c3c3c
-	#statusline #bbbbbb
-	#focused_workspace  #ad7fa8 #75507b #ffffff
-	#active_workspace   #75507b #ad7fa8 #ffffff
-	#inactive_workspace #3c3c3c #3c3c3c #aaaaaa
-	#urgent_workspace   #df5757 #c22f2f #ffffff
-
-	#NECROMANT: ekse2
 	#background #000000
 	#statusline #d0d0d0 
 	#focused_workspace  #ad7fa8 #75507b #ffffff
@@ -405,22 +360,13 @@ bar {
 	#inactive_workspace #000000 #000000 #aaaaaa
 	#urgent_workspace   #df5757 #c22f2f #ffffff
 
-	#NECROMANT: ekse2-light
+	#NECROMANT: ekse-light
 	#background #3c3c3c
 	#statusline #bbbbbb
 	#focused_workspace  #ad7fa8 #75507b #ffffff
 	#active_workspace   #75507b #ad7fa8 #ffffff
 	#inactive_workspace #3c3c3c #3c3c3c #aaaaaa
 	#urgent_workspace   #df5757 #c22f2f #ffffff
-
-	#NECROMANT: solorized
-    #background #000304
-    #statusline #839496
-    #focused_workspace  #b58900 #b58900 #002b36
-    #active_workspace   #586e75 #586e75 #002b36
-    #inactive_workspace #073642 #002b36 #839496
-    #urgent_workspace   #dc322f #dc322f #fdf6e3
-
         } 
 
 }
