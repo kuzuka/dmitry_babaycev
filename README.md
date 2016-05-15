@@ -6,11 +6,11 @@ A repository of ArchLinux user's configs.
 Please, look throught the configs before insatllations!
 
 To use my configs, you need to install packages:
-* i3-gaps [aur] (windows maker)
-* xkblayoutstate [aur] (to display keyboard layout)
+* i3-gaps (aur} (windows maker)
+* xkblayoutstate (aur) (to display keyboard layout)
 * feh (to use wallpapers)
 * terminus-font (in status bar; you can use any font)
-* ttf-font-awesome [aur] (to display icons in bar)
+* ttf-font-awesome (aur) (to display icons in bar)
 * scrot (to make screenshots)
 
 Screenshots:
