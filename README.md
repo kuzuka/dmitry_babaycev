@@ -14,6 +14,5 @@ To use my configs, you need to install packages:
 * scrot (to make screenshots)
 
 Screenshots:
-![alt tag](https://github.com/kuzuka/dmitry_babaycev/blob/master/clean.png)
-![alt tag](https://github.com/kuzuka/dmitry_babaycev/blob/master/screenfetch.png)
-![alt tag](https://github.com/kuzuka/dmitry_babaycev/blob/master/terminal.png)
+![alt tag](https://github.com/kuzuka/dmitry_babaycev/blob/master/scrot-clean.png)
+![alt tag](https://github.com/kuzuka/dmitry_babaycev/blob/master/scrot-terminal.png)
