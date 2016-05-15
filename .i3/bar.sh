@@ -1,513 +1,394 @@
-#!/usr/bin/env bash
+/*
+ * vim:ts=4:sw=4:expandtab
+ *
+ * i3bar - an xcb-based status- and ws-bar for i3
+ * © 2010 Axel Wagner and contributors (see also: LICENSE)
+ *
+ * config.c: Parses the configuration (received from i3).
+ *
+ */
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <i3/ipc.h>
+#include <yajl/yajl_parse.h>
+#include <yajl/yajl_version.h>
 
+#include <X11/Xlib.h>
 
-##
-## Generate JSON for i3bar
-## A replacement for i3status written in bash
-## kalterfive
-##
-## Dependencies:
-## mpd, mpc, deadbeef
-## skb -- get language
-## sensors -- get heating cpu
-## acpi -- get battery state
-##
+#include "common.h"
 
+static char *cur_key;
+static bool parsing_bindings;
+static bool parsing_tray_outputs;
 
-#	{{{ Error codes
+/*
+ * Parse a key.
+ *
+ * Essentially we just save it in cur_key.
+ *
+ */
+static int config_map_key_cb(void *params_, const unsigned char *keyVal, size_t keyLen) {
+    FREE(cur_key);
+    sasprintf(&(cur_key), "%.*s", keyLen, keyVal);
 
-E_UE=6 # unhandeled event
+    if (strcmp(cur_key, "bindings") == 0) {
+        parsing_bindings = true;
+    }
 
-#	}}}
+    if (strcmp(cur_key, "tray_outputs") == 0) {
+        parsing_tray_outputs = true;
+    }
 
-
-#	{{{ Colors
-
-color_white='#FFFFFF'
-color_green='#53F34C'
-
-color_std='#CCCCCC'
-color_waring='#BBBB00'
-color_danger='#FB2020'
-
-icon_color='"icon_color":"'$color_white'"'
-
-#	}}}
-
-
-function iconbyname() {
-	local icon=$1
-	echo '"icon":"'$HOME/.config/i3/icons/$icon'.xbm"'
+    return 1;
 }
 
-
-##
-## Fattest processes
-##
-
-#function init_topmem() {
-#}
-
-function toJson() {
-	for process in "$@"; do
-		echo '{"full_text":"'$process'","color":"'$color_std'"},'
-	done
+static int config_end_array_cb(void *params_) {
+    parsing_bindings = false;
+    parsing_tray_outputs = false;
+    return 1;
 }
 
-function get_topmem() {
-	local count=5
-	local proc=(`ps -eo pmem,cmd\
-			| sort -k 1 -nr\
-			| awk '{print($2);}'\
-			| head -$count\
-			| sed 's/\/.*\/.*\///g'`)
+/*
+ * Parse a null value (current_workspace)
+ *
+ */
+static int config_null_cb(void *params_) {
+    if (!strcmp(cur_key, "id")) {
+        /* If 'id' is NULL, the bar config was not found. Error out. */
+        ELOG("No such bar config. Use 'i3-msg -t get_bar_config' to get the available configs.\n");
+        ELOG("Are you starting i3bar by hand? You should not:\n");
+        ELOG("Configure a 'bar' block in your i3 config and i3 will launch i3bar automatically.\n");
+        exit(EXIT_FAILURE);
+    }
 
-	topmem=`toJson ${proc[@]}`
+    return 1;
 }
 
+/*
+ * Parse a string
+ *
+ */
+static int config_string_cb(void *params_, const unsigned char *val, size_t _len) {
+    int len = (int)_len;
+    /* The id and socket_path are ignored, we already know them. */
+    if (!strcmp(cur_key, "id") || !strcmp(cur_key, "socket_path"))
+        return 1;
 
-##
-## Kernel version
-##
+    if (parsing_bindings) {
+        if (strcmp(cur_key, "command") == 0) {
+            binding_t *binding = TAILQ_LAST(&(config.bindings), bindings_head);
+            if (binding == NULL) {
+                ELOG("There is no binding to put the current command onto. This is a bug in i3.\n");
+                return 0;
+            }
 
-function init_kernel() {
-	## JSON output
-	local full_text='"full_text":"'`uname -sr`'"'
-	local color='"color":"'$color_std'"'
-	local icon_kernel=`iconbyname arch`
-	kernel='{'$full_text','$color','$icon_kernel','$icon_color'},'
+            if (binding->command != NULL) {
+                ELOG("The binding for input_code = %d already has a command. This is a bug in i3.\n", binding->input_code);
+                return 0;
+            }
+
+            sasprintf(&(binding->command), "%.*s", len, val);
+            return 1;
+        }
+
+        ELOG("Unknown key \"%s\" while parsing bar bindings.\n", cur_key);
+        return 0;
+    }
+
+    if (parsing_tray_outputs) {
+        DLOG("Adding tray_output = %.*s to the list.\n", len, val);
+        tray_output_t *tray_output = scalloc(1, sizeof(tray_output_t));
+        sasprintf(&(tray_output->output), "%.*s", len, val);
+        TAILQ_INSERT_TAIL(&(config.tray_outputs), tray_output, tray_outputs);
+        return 1;
+    }
+
+    if (!strcmp(cur_key, "mode")) {
+        DLOG("mode = %.*s, len = %d\n", len, val, len);
+        config.hide_on_modifier = (len == 4 && !strncmp((const char *)val, "dock", strlen("dock")) ? M_DOCK
+                                                                                                   : (len == 4 && !strncmp((const char *)val, "hide", strlen("hide")) ? M_HIDE
+                                                                                                                                                                      : M_INVISIBLE));
+        return 1;
+    }
+
+    if (!strcmp(cur_key, "hidden_state")) {
+        DLOG("hidden_state = %.*s, len = %d\n", len, val, len);
+        config.hidden_state = (len == 4 && !strncmp((const char *)val, "hide", strlen("hide")) ? S_HIDE : S_SHOW);
+        return 1;
+    }
+
+    if (!strcmp(cur_key, "modifier")) {
+        DLOG("modifier = %.*s\n", len, val);
+        if (len == 4 && !strncmp((const char *)val, "none", strlen("none"))) {
+            config.modifier = XCB_NONE;
+            return 1;
+        }
+
+        if (len == 5 && !strncmp((const char *)val, "shift", strlen("shift"))) {
+            config.modifier = ShiftMask;
+            return 1;
+        }
+        if (len == 4 && !strncmp((const char *)val, "ctrl", strlen("ctrl"))) {
+            config.modifier = ControlMask;
+            return 1;
+        }
+        if (len == 4 && !strncmp((const char *)val, "Mod", strlen("Mod"))) {
+            switch (val[3]) {
+                case '1':
+                    config.modifier = Mod1Mask;
+                    return 1;
+                case '2':
+                    config.modifier = Mod2Mask;
+                    return 1;
+                case '3':
+                    config.modifier = Mod3Mask;
+                    return 1;
+                case '5':
+                    config.modifier = Mod5Mask;
+                    return 1;
+            }
+        }
+
+        config.modifier = Mod4Mask;
+        return 1;
+    }
+
+    /* This key was sent in <= 4.10.2. We keep it around to avoid breakage for
+     * users updating from that version and restarting i3bar before i3. */
+    if (!strcmp(cur_key, "wheel_up_cmd")) {
+        DLOG("wheel_up_cmd = %.*s\n", len, val);
+        binding_t *binding = scalloc(1, sizeof(binding_t));
+        binding->input_code = 4;
+        sasprintf(&(binding->command), "%.*s", len, val);
+        TAILQ_INSERT_TAIL(&(config.bindings), binding, bindings);
+        return 1;
+    }
+
+    /* This key was sent in <= 4.10.2. We keep it around to avoid breakage for
+     * users updating from that version and restarting i3bar before i3. */
+    if (!strcmp(cur_key, "wheel_down_cmd")) {
+        DLOG("wheel_down_cmd = %.*s\n", len, val);
+        binding_t *binding = scalloc(1, sizeof(binding_t));
+        binding->input_code = 5;
+        sasprintf(&(binding->command), "%.*s", len, val);
+        TAILQ_INSERT_TAIL(&(config.bindings), binding, bindings);
+        return 1;
+    }
+
+    if (!strcmp(cur_key, "position")) {
+        DLOG("position = %.*s\n", len, val);
+        config.position = (len == 3 && !strncmp((const char *)val, "top", strlen("top")) ? POS_TOP : POS_BOT);
+        return 1;
+    }
+
+    if (!strcmp(cur_key, "status_command")) {
+        DLOG("command = %.*s\n", len, val);
+        sasprintf(&config.command, "%.*s", len, val);
+        return 1;
+    }
+
+    if (!strcmp(cur_key, "font")) {
+        DLOG("font = %.*s\n", len, val);
+        sasprintf(&config.fontname, "%.*s", len, val);
+        return 1;
+    }
+
+    if (!strcmp(cur_key, "separator_symbol")) {
+        DLOG("separator = %.*s\n", len, val);
+        I3STRING_FREE(config.separator_symbol);
+        config.separator_symbol = i3string_from_utf8_with_length((const char *)val, len);
+        return 1;
+    }
+
+    if (!strcmp(cur_key, "outputs")) {
+        DLOG("+output %.*s\n", len, val);
+        int new_num_outputs = config.num_outputs + 1;
+        config.outputs = srealloc(config.outputs, sizeof(char *) * new_num_outputs);
+        sasprintf(&config.outputs[config.num_outputs], "%.*s", len, val);
+        config.num_outputs = new_num_outputs;
+        return 1;
+    }
+
+    /* We keep the old single tray_output working for users who only restart i3bar
+     * after updating. */
+    if (!strcmp(cur_key, "tray_output")) {
+        DLOG("Found deprecated key tray_output %.*s.\n", len, val);
+        tray_output_t *tray_output = scalloc(1, sizeof(tray_output_t));
+        sasprintf(&(tray_output->output), "%.*s", len, val);
+        TAILQ_INSERT_TAIL(&(config.tray_outputs), tray_output, tray_outputs);
+        return 1;
+    }
+
+#define COLOR(json_name, struct_name)                                  \
+    do {                                                               \
+        if (!strcmp(cur_key, #json_name)) {                            \
+            DLOG(#json_name " = " #struct_name " = %.*s\n", len, val); \
+            sasprintf(&(config.colors.struct_name), "%.*s", len, val); \
+            return 1;                                                  \
+        }                                                              \
+    } while (0)
+
+    COLOR(statusline, bar_fg);
+    COLOR(background, bar_bg);
+    COLOR(separator, sep_fg);
+    COLOR(focused_statusline, focus_bar_fg);
+    COLOR(focused_background, focus_bar_bg);
+    COLOR(focused_separator, focus_sep_fg);
+    COLOR(focused_workspace_border, focus_ws_border);
+    COLOR(focused_workspace_bg, focus_ws_bg);
+    COLOR(focused_workspace_text, focus_ws_fg);
+    COLOR(active_workspace_border, active_ws_border);
+    COLOR(active_workspace_bg, active_ws_bg);
+    COLOR(active_workspace_text, active_ws_fg);
+    COLOR(inactive_workspace_border, inactive_ws_border);
+    COLOR(inactive_workspace_bg, inactive_ws_bg);
+    COLOR(inactive_workspace_text, inactive_ws_fg);
+    COLOR(urgent_workspace_border, urgent_ws_border);
+    COLOR(urgent_workspace_bg, urgent_ws_bg);
+    COLOR(urgent_workspace_text, urgent_ws_fg);
+    COLOR(binding_mode_border, binding_mode_border);
+    COLOR(binding_mode_bg, binding_mode_bg);
+    COLOR(binding_mode_text, binding_mode_fg);
+
+    printf("got unexpected string %.*s for cur_key = %s\n", len, val, cur_key);
+
+    return 0;
 }
 
-#function get_kernel() {
-#}
+/*
+ * Parse a boolean value
+ *
+ */
+static int config_boolean_cb(void *params_, int val) {
+    if (!strcmp(cur_key, "binding_mode_indicator")) {
+        DLOG("binding_mode_indicator = %d\n", val);
+        config.disable_binding_mode_indicator = !val;
+        return 1;
+    }
 
+    if (!strcmp(cur_key, "workspace_buttons")) {
+        DLOG("workspace_buttons = %d\n", val);
+        config.disable_ws = !val;
+        return 1;
+    }
 
-##
-## State of MPD
-##
+    if (!strcmp(cur_key, "strip_workspace_numbers")) {
+        DLOG("strip_workspace_numbers = %d\n", val);
+        config.strip_ws_numbers = val;
+        return 1;
+    }
 
-function init_music() {
-	icon_play=`iconbyname play`
-	icon_pause=`iconbyname pause`
-	icon_stop=`iconbyname stop`
+    if (!strcmp(cur_key, "verbose")) {
+        DLOG("verbose = %d\n", val);
+        config.verbose = val;
+        return 1;
+    }
+
+    return 0;
 }
 
-function get_music() {
-	local color='"color":"'$color_std'"'
-	local full_text
-	local icon
+/*
+ * Parse an integer value
+ *
+ */
+static int config_integer_cb(void *params_, long long val) {
+    if (parsing_bindings) {
+        if (strcmp(cur_key, "input_code") == 0) {
+            binding_t *binding = scalloc(1, sizeof(binding_t));
+            binding->input_code = val;
+            TAILQ_INSERT_TAIL(&(config.bindings), binding, bindings);
 
-	state=`mpc | grep "\[..*\]"`
-	if [[ ! "$state" ]]; then
-#		full_text='"full_text":"OFF"'
-#		icon=$icon_stop
-		unset music
-		return
-	else
-		elapsed=`echo "$state" | awk -F\/ '{print($2);}' | sed 's/.* //'`
-		full_text='"full_text":"'$elapsed'"'
-		state=`echo "$state" | sed 's/\].*//;s/\[//'`
-		case "$state" in
-			playing)
-				icon=$icon_play
-			;;
+            return 1;
+        }
 
-			paused)
-				icon=$icon_pause
-			;;
-		esac
-	fi
+        ELOG("Unknown key \"%s\" while parsing bar bindings.\n", cur_key);
+        return 0;
+    }
 
-	music='{'$full_text','$color','$icon','$icon_color'},'
+    if (!strcmp(cur_key, "bar_height")) {
+        DLOG("bar_height = %lld", val);
+        config.bar_height = (uint32_t)val;
+        return 1;
+    }
+
+    if (!strcmp(cur_key, "tray_padding")) {
+        DLOG("tray_padding = %lld\n", val);
+        config.tray_padding = val;
+        return 1;
+    }
+
+    return 0;
 }
 
+/* A datastructure to pass all these callbacks to yajl */
+static yajl_callbacks outputs_callbacks = {
+    .yajl_null = config_null_cb,
+    .yajl_integer = config_integer_cb,
+    .yajl_boolean = config_boolean_cb,
+    .yajl_string = config_string_cb,
+    .yajl_end_array = config_end_array_cb,
+    .yajl_map_key = config_map_key_cb,
+};
 
-##
-## Keyboard
-##
+/*
+ * Start parsing the received bar configuration JSON string
+ *
+ */
+void parse_config_json(char *json) {
+    yajl_handle handle;
+    yajl_status state;
+    handle = yajl_alloc(&outputs_callbacks, NULL, NULL);
 
-function init_language() {
-	icon_language=`iconbyname kbd`
+    TAILQ_INIT(&(config.bindings));
+    TAILQ_INIT(&(config.tray_outputs));
+
+    state = yajl_parse(handle, (const unsigned char *)json, strlen(json));
+
+    /* FIXME: Proper error handling for JSON parsing */
+    switch (state) {
+        case yajl_status_ok:
+            break;
+        case yajl_status_client_canceled:
+        case yajl_status_error:
+            ELOG("Could not parse config reply!\n");
+            exit(EXIT_FAILURE);
+            break;
+    }
+
+    yajl_free(handle);
 }
 
-function get_language() {
-	language=`skb noloop\
-			| head -c 2\
-			| tr a-z A-Z`
-
-	## JSON output
-	local full_text='"full_text":"'$language'"'
-	local color='"color":"'$color_std'"'
-	language='{'$full_text','$color','$icon_language','$icon_color'},'
+/*
+ * free()s the color strings as soon as they are not needed anymore.
+ *
+ */
+void free_colors(struct xcb_color_strings_t *colors) {
+#define FREE_COLOR(x)    \
+    do {                 \
+        FREE(colors->x); \
+    } while (0)
+    FREE_COLOR(bar_fg);
+    FREE_COLOR(bar_bg);
+    FREE_COLOR(sep_fg);
+    FREE_COLOR(focus_bar_fg);
+    FREE_COLOR(focus_bar_bg);
+    FREE_COLOR(focus_sep_fg);
+    FREE_COLOR(active_ws_fg);
+    FREE_COLOR(active_ws_bg);
+    FREE_COLOR(active_ws_border);
+    FREE_COLOR(inactive_ws_fg);
+    FREE_COLOR(inactive_ws_bg);
+    FREE_COLOR(inactive_ws_border);
+    FREE_COLOR(urgent_ws_fg);
+    FREE_COLOR(urgent_ws_bg);
+    FREE_COLOR(urgent_ws_border);
+    FREE_COLOR(focus_ws_fg);
+    FREE_COLOR(focus_ws_bg);
+    FREE_COLOR(focus_ws_border);
+    FREE_COLOR(binding_mode_fg);
+    FREE_COLOR(binding_mode_bg);
+    FREE_COLOR(binding_mode_border);
+#undef FREE_COLOR
 }
-
-
-##
-## Signal Strength
-##
-
-function init_csq() {
-	# csqd, yes...
-	sudo killall csqd
-	sudo $HOME/bin/csqd "/dev/ttyUSB2" &
-
-	icon_csq=`iconbyname csq`
-}
-
-function get_csq() {
-	csq=`cat /tmp/csq.txt`
-
-	## JSON output
-	local full_text='"full_text":"'$csq'"'
-	local color='"color":"'$color_std'"'
-	csq='{'$full_text','$color','$icon_csq','$icon_color'},'
-}
-
-
-##
-## Num Lock state
-##
-
-function init_numlock() {
-	icon_numlock=`iconbyname numlock`
-}
-
-function get_numlock() {
-	numlock=`xset q\
-			| grep "Num Lock:"\
-			| awk '{print($8)}'\
-			| tr a-z A-Z`
-
-	## JSON output
-	local full_text='"full_text":"'$numlock'"'
-	local color='"color":"'$color_std'"'
-	numlock='{'$full_text','$color','$icon_numlock','$icon_color'},'
-}
-
-
-##
-## Caps Lock state
-##
-
-function init_capslock() {
-	icon_capslock=`iconbyname capslock`
-}
-
-function get_capslock_color() {
-	local capslock=$1
-	local color0
-	local color1
-
-	case "$capslock" in
-		"ON")
-			color0='"color":"'$color_waring'"'      # text
-			color1='"icon_color":"'$color_waring'"' # icon
-		;;
-
-		"OFF")
-			color0='"color":"'$color_std'"'
-			color1='"icon_color":"'$color_white'"'
-		;;
-
-		*)
-			exit $E_UE
-		;;
-	esac
-
-	echo "$color0,$color1"
-}
-
-function get_capslock() {
-	capslock=`xset q\
-			| grep "Caps Lock:"\
-			| awk '{print($4)}'\
-			| tr a-z A-Z`
-
-	## JSON output
-	local full_text='"full_text":"'$capslock'"'
-	local color=`get_capslock_color $capslock`
-	capslock='{'$full_text','$color','$icon_capslock'},'
-}
-
-
-##
-## Heating CPU
-##
-
-function init_heating_cpu() {
-	icon_cpu=`iconbyname cpu`
-}
-
-function get_heating() {
-	local sensors=`sensors\
-			| grep Core\
-			| sed 's/\..*//g;s/.*+//g'`
-
-	local heating_cpu=0
-	local kernels=0
-	for core in $sensors; do
-		$((heating_cpu += core))
-		$((kernels++))
-	done
-	$((heating_cpu /= kernels))
-
-	echo "$heating_cpu"
-}
-
-function get_heating_color() {
-	local heating_cpu=$1
-	local color0
-	local color1
-
-	case "$heating_cpu" in
-		7[0-9])
-			color0='"color":"'$color_waring'"'      # text
-			color1='"icon_color":"'$color_waring'"' # icon
-		;;
-
-		8[0-9] | 9[0-9] | 10[0-5])
-			color0='"color":"'$color_danger'"'
-			color1='"icon_color":"'$color_danger'"'
-		;;
-
-		*)
-			color0='"color":"'$color_std'"'
-			color1='"icon_color":"'$color_white'"'
-		;;
-	esac
-
-	echo "$color0,$color1"
-}
-
-function get_heating_cpu() {
-	heating_cpu=`get_heating`
-
-	## JSON output
-	local full_text='"full_text":"'$heating_cpu'°C"'
-	local color=`get_heating_color $heating_cpu`
-	heating_cpu='{'$full_text','$color','$icon_cpu'},'
-}
-
-
-##
-## Brightness level
-##
-
-function init_brightness() {
-	icon_brightness=`iconbyname sun`
-	brightness_path="/sys/class/backlight/intel_backlight"
-}
-
-function get_brightness() {
-	local brg=`cat $brightness_path/brightness`
-	local max_brg=`cat $brightness_path/max_brightness`
-	local brightness_level=`echo "scale = 2; $brg * 100 / $max_brg"\
-			 | bc`
-
-	## JSON output
-	local full_text='"full_text":"'$brightness_level'%"'
-	local color='"color":"'$color_std'"'
-	brightness='{'$full_text','$color','$icon_brightness','$icon_color'},'
-}
-
-
-##
-## Sound state (level and mute)
-##
-
-function init_sound() {
-	icon_sound_on=`iconbyname sound_on`
-	icon_sound_off=`iconbyname sound_off`
-}
-
-function get_sound_icon() {
-	local sound_state=`amixer get Master\
-			| grep 'Mono:'\
-			| awk '{print($6);}'`
-
-	case "$sound_state" in
-		"[on]")
-			echo "$icon_sound_on"
-		;;
-
-		"[off]")
-			echo "$icon_sound_off"
-		;;
-
-		*)
-			exit $E_UE
-		;;
-	esac
-}
-
-function get_sound() {
-	local sound_level=`amixer get Master\
-			| grep 'Mono:'\
-			| sed 's/\].*//;s/.*\[//'`
-	
-	## JSON output
-	local full_text='"full_text":"'$sound_level'"'
-	local color='"color":"'$color_std'"'
-	local icon=`get_sound_icon`
-	sound='{'$full_text','$color','$icon','$icon_color'},'
-}
-
-
-##
-## Battery level
-##
-
-function init_battery_level() {
-	icon_battery_charging=`iconbyname "battery/battery_charging"`
-	for ((i=0; i <= 100; i++)); do
-		local var="icon_battery_$i"
-		local full_path=`iconbyname "battery/battery_$i"`
-		declare -g "$var=$full_path"
-	done
-}
-
-function get_battery_color() {
-	local battery_level=$1
-	local color0
-	local color1
-
-	case "$battery_level" in
-		[0-9] | 10)
-			color0='"color":"'$color_danger'"'      # text
-			color1='"icon_color":"'$color_danger'"' # icon
-		;;
-
-		1[1-9] | 2[0-5])
-			color0='"color":"'$color_waring'"'
-			color1='"icon_color":"'$color_waring'"'
-		;;
-
-		9[5-9] | 100)
-			local state=`cat /sys/class/power_supply/BAT0/status`
-			if [[ "$state" == "Charging" ]]; then
-				color0='"color":"'$color_green'"'
-				color1='"icon_color":"'$color_green'"'
-			else
-				color0='"color":"'$color_std'"'
-				color1='"icon_color":"'$color_white'"'
-			fi
-		;;
-
-		*)
-			color0='"color":"'$color_std'"'
-			color1='"icon_color":"'$color_white'"'
-		;;
-	esac
-
-	echo "$color0,$color1"
-}
-
-function get_battery_icon() {
-	local battery_level=$1
-	local state=`acpi\
-			| awk '{print($3);}'\
-			| sed 's/,//g'`
-
-	case "$state" in
-		Discharging)
-			case "$battery_level" in
-				[0-5])           echo "$icon_battery_0"   ;;
-				[6-9] | 1[0-5])  echo "$icon_battery_10"  ;;
-				1[6-9] | 2[0-5]) echo "$icon_battery_20"  ;;
-				2[6-9] | 3[0-5]) echo "$icon_battery_30"  ;;
-				3[6-9] | 4[0-5]) echo "$icon_battery_40"  ;;
-				4[6-9] | 5[0-5]) echo "$icon_battery_50"  ;;
-				5[6-9] | 6[0-5]) echo "$icon_battery_60"  ;;
-				6[6-9] | 7[0-5]) echo "$icon_battery_70"  ;;
-				7[6-9] | 8[0-5]) echo "$icon_battery_80"  ;;
-				8[6-9] | 9[0-5]) echo "$icon_battery_90"  ;;
-				9[6-9] | 100)    echo "$icon_battery_100" ;;
-			esac
-		;;
-
-		Charging)
-			echo "$icon_battery_charging"
-		;;
-
-		*)
-			exit $E_UE
-		;;
-	esac
-}
-
-function get_battery_level() {
-#	battery_level=`cat /sys/class/power_supply/BAT0/capacity`
-	battery_level=`acpi\
-			| sed 's/%,.*//g;s/.*\s//g'`
-
-	## JSON output
-	local full_text='"full_text":"'$battery_level'%"'
-	local color=`get_battery_color $battery_level`
-	local icon_battery=`get_battery_icon $battery_level`
-	battery_level='{'$full_text','$color','$icon_battery'},'
-}
-
-
-##
-## Date and time
-##
-
-function init_date() {
-	icon_date=`iconbyname cal`
-}
-
-function get_date() {
-	date=`date +%a\ %d.%m.%Y\
-			| tr a-z A-Z`
-
-	## JSON output
-	local full_text='"full_text":"'$date'"'
-	local color='"color":"'$color_std'"'
-	date='{'$full_text','$color','$icon_date','$icon_color'},'
-}
-
-## The last block
-function get_time() {
-	time=`date +%H:%M:%S`
-
-	# JSON output
-	local full_text='"full_text":"'$time' "'
-	local color='"color":"'$color_std'"'
-	time='{'$full_text','$color'}'
-}
-
-
-blocks=(
-#	[0]=topmem
-	[10]=kernel
-	[20]=music
-	[30]=language
-	[40]=numlock
-#	[50]=capslock
-#	[60]=csq
-	[70]=heating_cpu
-#	[80]=brightness
-	[90]=sound
-	[100]=battery_level
-	[110]=date
-	[120]=time
-)
-
-unset func_list
-bar='['
-for block in ${blocks[@]}; do
-	init_$block 2> /dev/null
-	func_list+=" get_$block"
-	bar+='${'$block':-}'
-done
-bar+="],"
-
-echo '{"version":1}['
-while [ 1 ]; do
-	for func in $func_list; do
-		$func 2> /dev/null
-	done
-	eval echo -e \"${bar//\\/\\\\}\" || exit
-
-	sleep 0.5
-done

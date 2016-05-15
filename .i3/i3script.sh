@@ -20,6 +20,6 @@ do
         let MEMUSED=$(echo ${MEM} | awk '{print $3}')/1024
         let MEMFREE=$(echo ${MEM} | awk '{print $4}')/1024
         let MEMAVABLE=$(echo ${MEM} | awk '{print $7}')/1024
-        ln="$line [$LG]"
+        ln="$line &#xf11c; $( exec xkblayout-state print "%s" ) " # 11c keyboard
         echo ${ln//|/  } || exit 1
 done
